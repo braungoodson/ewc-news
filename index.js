@@ -1,29 +1,29 @@
 var News = {
   news: function news(config) {
-    //console.log('executing news for ', config);
+    console.log('executing news for ', config);
     var keywords = config.keywords;
     var done = config.done;
     var queries = keywords.split(', ');
-    //console.log('using ' + queries.length + ' keywords');
+    console.log('using ' + queries.length + ' keywords');
     var news = [];
 
     for (var i = queries.length - 1; i >= 0; i--) {
-      //console.log(i + ' calling request with ' + queries[i]);
+      console.log(i + ' calling request with ' + queries[i]);
       forEachRequest(i, queries[i], done);
     }
 
     function forEachRequest(i, q, done) {
       request(q, function(response){
-        //console.log('begin response processing');
+        console.log('begin response processing');
         var object = JSON.parse(response);
         var results = object.responseData.results;
         for (var r in results) {
-          //console.log('got new result');
+          console.log('got new result');
           news.push(results[r]);
         }
-        //console.log(i);
+        console.log(i);
         if (!i) {
-          //console.log('done');
+          console.log('done');
           done(news);
         }
       });
@@ -33,7 +33,7 @@ var News = {
 
       var http = require('http');
 
-      //console.log('making request for ' + query)
+      console.log('making request for ' + query)
 
       var options = {
         hostname: 'ajax.googleapis.com',
@@ -46,38 +46,40 @@ var News = {
         }
       };
 
-      //console.log('set options');
+      console.log('set options');
 
       var req;
-      //console.log('calling http.request');
+      console.log('calling http.request');
       req = http.request(options, requestHandler);
-      //console.log('binding error handler');
+      console.log('binding error handler');
       req.on('error', errorHandler);
-      //console.log('ending request');
+      console.log('ending request');
       req.end();
 
       function requestHandler(res) {
-        //console.log('begining requestHandler');
+        console.log('begining requestHandler');
         res.setEncoding('utf8');
         var chunks = '';
         res.on('data', function (chunk) {
-          //console.log('got data');
+          console.log('got data');
           chunks += chunk;
         });
         res.on('end', function () {
-          //console.log('end data');
+          console.log('end data');
           callback(chunks);
         });
       }
 
       function errorHandler(e) {
-        //console.log(e.message);
+        console.log(e.message);
         throw new Error(e.message);
       }
 
       function escape(q) {
-        //console.log('escaping ' + q);
-        return q.replace(' ', '%20');
+        console.log('escaping ' + q);
+        var escaped = q.replace(/ /g, '%20');
+        console.log('escaped ' + escaped);
+        return escaped;
       }
     }
   }
